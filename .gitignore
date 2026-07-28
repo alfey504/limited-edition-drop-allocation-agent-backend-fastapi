@@ -15,5 +15,6 @@ project_structure.md
 
 # Generated at runtime
 reports/
+logs/
 
 sample_pdf

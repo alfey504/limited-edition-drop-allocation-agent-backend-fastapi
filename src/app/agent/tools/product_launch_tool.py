@@ -1,8 +1,11 @@
 from langchain_core.tools import StructuredTool, tool
 from pydantic import BaseModel, Field
 
+from app.core.logging import get_logger
 from app.integrations.sneaker_api_client import SneakerApiClient
 from app.integrations.sneaker_api_schemas import SneakerRead
+
+logger = get_logger(__name__)
 
 
 class ProductLaunchInput(BaseModel):
@@ -43,6 +46,7 @@ def make_product_launch_tool(client: SneakerApiClient) -> StructuredTool:
     async def get_product_launch_info(
         sneaker_id: int | None = None, query: str | None = None
     ) -> dict | list[dict]:
+        logger.info("get_product_launch_info called: sneaker_id=%s query=%r", sneaker_id, query)
         if sneaker_id is not None:
             sneaker = await client.get_sneaker(sneaker_id)
             if sneaker is None:

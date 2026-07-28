@@ -3,7 +3,10 @@ import uuid
 from langchain_core.tools import StructuredTool, tool
 from pydantic import BaseModel, Field
 
+from app.core.logging import get_logger
 from app.repositories.allocation_repository import AllocationRepository
+
+logger = get_logger(__name__)
 
 
 class SaveAllocationInput(BaseModel):
@@ -49,6 +52,7 @@ def make_save_allocation_tool(
         allocation: dict[str, int],
         reasoning: str,
     ) -> dict[str, str]:
+        logger.info("save_allocation_recommendation called: sneaker_id=%s", sneaker_id)
         record = await repository.save(
             conversation_id=conversation_id,
             sneaker_id=sneaker_id,

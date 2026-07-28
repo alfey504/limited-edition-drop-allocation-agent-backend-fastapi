@@ -2,8 +2,11 @@ import uuid
 
 from langchain_core.tools import StructuredTool, tool
 
+from app.core.logging import get_logger
 from app.db.models.allocation import AllocationRecommendation
 from app.repositories.allocation_repository import AllocationRepository
+
+logger = get_logger(__name__)
 
 
 def _serialize_allocation(record: AllocationRecommendation) -> dict:
@@ -34,6 +37,7 @@ def make_allocation_history_tool(
         )
     )
     async def get_previous_allocations() -> list[dict]:
+        logger.info("get_previous_allocations called: conversation_id=%s", conversation_id)
         records = await repository.list_for_conversation(conversation_id)
         return [_serialize_allocation(record) for record in records]
 

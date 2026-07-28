@@ -10,7 +10,10 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
+from app.core.logging import get_logger
 from app.repositories.report_repository import ReportRepository
+
+logger = get_logger(__name__)
 
 
 class AllocationReportInput(BaseModel):
@@ -114,6 +117,10 @@ def make_allocation_report_tool(
         allocation: dict[str, int],
         reasoning: str,
     ) -> dict[str, str]:
+        logger.info(
+            "generate_allocation_report_pdf called: sneaker_id=%s sneaker_name=%s",
+            sneaker_id, sneaker_name,
+        )
         data = AllocationReportInput(
             sneaker_id=sneaker_id,
             sneaker_name=sneaker_name,

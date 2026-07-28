@@ -3,6 +3,10 @@ from pathlib import Path
 
 from langchain_core.tools import StructuredTool, tool
 
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
+
 _KNOWLEDGE_PATH = (
     Path(__file__).resolve().parent.parent / "knowledge" / "regional-demand-drivers.md"
 )
@@ -24,6 +28,7 @@ def make_regional_demand_drivers_tool() -> StructuredTool:
         )
     )
     async def get_regional_demand_drivers() -> str:
+        logger.info("get_regional_demand_drivers called")
         return _read_knowledge_file()
 
     return get_regional_demand_drivers

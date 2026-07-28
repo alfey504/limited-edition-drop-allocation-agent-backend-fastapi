@@ -3,8 +3,11 @@ from datetime import date
 from langchain_core.tools import StructuredTool, tool
 from pydantic import BaseModel, Field
 
+from app.core.logging import get_logger
 from app.integrations.forecasting_api_client import ForecastingApiClient
 from app.integrations.forecasting_api_schemas import ForecastRequest
+
+logger = get_logger(__name__)
 
 
 class DemandForecastInput(BaseModel):
@@ -38,6 +41,10 @@ def make_demand_forecast_tool(client: ForecastingApiClient) -> StructuredTool:
         silhouette: str,
         colorway_type: str,
     ) -> dict[str, float]:
+        logger.info(
+            "get_demand_forecast called: brand=%s silhouette=%s regions=%s",
+            brand, silhouette, buyer_regions,
+        )
         request = ForecastRequest(
             buyer_regions=buyer_regions,
             brand=brand,

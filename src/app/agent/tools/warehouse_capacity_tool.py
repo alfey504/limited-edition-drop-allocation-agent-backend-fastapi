@@ -1,6 +1,9 @@
 from langchain_core.tools import StructuredTool, tool
 
+from app.core.logging import get_logger
 from app.integrations.sneaker_api_client import SneakerApiClient
+
+logger = get_logger(__name__)
 
 
 def make_warehouse_capacity_tool(client: SneakerApiClient) -> StructuredTool:
@@ -12,6 +15,7 @@ def make_warehouse_capacity_tool(client: SneakerApiClient) -> StructuredTool:
         )
     )
     async def get_warehouse_capacity() -> dict[str, int]:
+        logger.info("get_warehouse_capacity called")
         capacities = await client.get_warehouse_capacities(limit=200)
         return {capacity.region.region: capacity.capacity for capacity in capacities}
 
