@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     forecasting_api_base_url: str
     forecasting_api_key: str
-
+    db_conn: str
 
 @lru_cache
 def get_settings() -> Settings:
