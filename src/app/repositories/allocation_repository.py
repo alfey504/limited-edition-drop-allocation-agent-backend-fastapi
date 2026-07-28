@@ -15,6 +15,8 @@ class AllocationRepository:
         conversation_id: uuid.UUID,
         sneaker_id: int,
         total_inventory: int,
+        demand_forecast: dict[str, float],
+        forecast_analysis: str,
         allocation: dict[str, int],
         reasoning: str,
     ) -> AllocationRecommendation:
@@ -22,6 +24,8 @@ class AllocationRepository:
             conversation_id=conversation_id,
             sneaker_id=sneaker_id,
             total_inventory=total_inventory,
+            demand_forecast=demand_forecast,
+            forecast_analysis=forecast_analysis,
             allocation=allocation,
             reasoning=reasoning,
         )

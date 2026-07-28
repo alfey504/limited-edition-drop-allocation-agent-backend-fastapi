@@ -9,6 +9,7 @@ from app.db.base import Base
 
 if TYPE_CHECKING:
     from app.db.models.conversation import Conversation
+    from app.db.models.report import Report
 
 
 class User(Base):
@@ -22,3 +23,4 @@ class User(Base):
     )
 
     conversations: Mapped[list["Conversation"]] = relationship(back_populates="user")
+    reports: Mapped[list["Report"]] = relationship(back_populates="user")

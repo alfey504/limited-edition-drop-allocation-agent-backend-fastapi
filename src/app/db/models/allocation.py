@@ -17,6 +17,8 @@ class AllocationRecommendation(Base):
     )
     sneaker_id: Mapped[int] = mapped_column(Integer)
     total_inventory: Mapped[int] = mapped_column(Integer)
+    demand_forecast: Mapped[dict[str, float]] = mapped_column(JSONVariant)
+    forecast_analysis: Mapped[str] = mapped_column(Text)
     allocation: Mapped[dict[str, int]] = mapped_column(JSONVariant)
     reasoning: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(

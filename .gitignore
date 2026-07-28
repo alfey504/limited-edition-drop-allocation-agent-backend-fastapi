@@ -12,3 +12,8 @@ wheels/
 
 # Planning docs
 project_structure.md
+
+# Generated at runtime
+reports/
+
+sample_pdf
