@@ -23,6 +23,7 @@ class ConversationRepository:
             select(Conversation)
             .where(Conversation.id == conversation_id)
             .options(selectinload(Conversation.messages))
+            .execution_options(populate_existing=True)
         )
         return result.scalar_one_or_none()
 

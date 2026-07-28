@@ -1,4 +1,5 @@
 import json
+from typing import override
 
 from langchain.agents.middleware.types import AgentMiddleware, ToolCallRequest
 from langchain_core.messages import ToolMessage
@@ -30,7 +31,8 @@ class ToolOutputIntegrityMiddleware(AgentMiddleware):
     """
 
     state_schema = CapturedToolState
-
+    
+    @override
     async def awrap_tool_call(self, request: ToolCallRequest, handler):
         tool_name = request.tool_call["name"]
 

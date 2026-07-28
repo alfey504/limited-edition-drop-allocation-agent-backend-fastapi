@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Callable
 from pathlib import Path
 
 from langchain.agents import create_agent
@@ -52,3 +53,33 @@ def build_agent_graph(
         system_prompt=SYSTEM_PROMPT,
         middleware=[ToolOutputIntegrityMiddleware()],
     )
+
+
+def make_agent_graph_factory(
+    llm: BaseChatModel,
+    sneaker_client: SneakerApiClient,
+    forecasting_client: ForecastingApiClient,
+    allocation_repository: AllocationRepository,
+    report_repository: ReportRepository,
+    reports_dir: Path,
+) -> Callable[[uuid.UUID, uuid.UUID], CompiledStateGraph]:
+    """
+    Bundles everything build_agent_graph needs except the per-turn user_id/
+    conversation_id, so callers like ConversationService only have to hold onto
+    one closure instead of five separate agent-construction dependencies it has
+    no other reason to know about.
+    """
+
+    def _build(user_id: uuid.UUID, conversation_id: uuid.UUID) -> CompiledStateGraph:
+        return build_agent_graph(
+            llm,
+            sneaker_client,
+            forecasting_client,
+            allocation_repository,
+            report_repository,
+            reports_dir,
+            user_id,
+            conversation_id,
+        )
+
+    return _build

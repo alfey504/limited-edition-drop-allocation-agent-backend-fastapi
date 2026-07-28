@@ -135,6 +135,6 @@ def make_allocation_report_tool(
         # to make sure only the user who generated a report can download it.
         report = await report_repository.create(user_id=user_id, document=filename)
 
-        return {"filename": filename, "report_id": report.id}
+        return {"filename": filename, "report_id": str(report.id)}
 
     return generate_allocation_report_pdf
