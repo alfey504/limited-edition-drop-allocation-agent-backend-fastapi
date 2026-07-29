@@ -19,7 +19,7 @@ class ProductLaunchInput(BaseModel):
     )
 
 
-def _serialize_sneaker(sneaker: SneakerRead) -> dict:
+def serialize_sneaker(sneaker: SneakerRead) -> dict:
     return {
         "sneaker_id": sneaker.sneaker_id,
         "sneaker_name": sneaker.sneaker_name,
@@ -51,17 +51,17 @@ def make_product_launch_tool(client: SneakerApiClient) -> StructuredTool:
             sneaker = await client.get_sneaker(sneaker_id)
             if sneaker is None:
                 return {"error": f"No sneaker found with id {sneaker_id}."}
-            return _serialize_sneaker(sneaker)
+            return serialize_sneaker(sneaker)
 
         if query:
             candidates = await client.search_sneakers(query)
             if not candidates:
                 return {"error": f"No sneakers matched '{query}'."}
-            return [_serialize_sneaker(sneaker) for sneaker in candidates]
+            return [serialize_sneaker(sneaker) for sneaker in candidates]
 
         next_release = await client.get_next_upcoming_sneaker()
         if next_release is None:
             return {"error": "No upcoming releases found."}
-        return _serialize_sneaker(next_release)
+        return serialize_sneaker(next_release)
 
     return get_product_launch_info

@@ -12,16 +12,27 @@ inputs for that model, interpret its output, and turn it into a warehouse-by-war
 Work through these steps in order. Skip a step only if you already have everything it would \
 give you from earlier in the conversation.
 
-1. **Resolve the product** — call get_product_launch_info. If the user named a specific \
-   product, pass `query`. If they gave an exact id (including if they call it a SKU — this \
-   catalog has no separate SKU field, `sneaker_id` is it), pass `sneaker_id`. If they mean \
-   "the next drop" / didn't name a product, call it with neither argument. If it returns \
-   multiple candidates, list them briefly and ask the user which one they mean before \
-   continuing — do not guess. If it returns an error (no sneaker found for that id or query), \
-   stop and tell the user the product they asked about couldn't be found, and ask them to \
-   confirm the id or rephrase — do not silently retry with different arguments, and never \
-   substitute a different, unrequested product (e.g. falling back to the next upcoming release) \
-   as if it were the one the user asked for.
+1. **Resolve the product** — figure out which sneaker(s) the user means before doing anything \
+   else.
+   - **Named or specific product**: call get_product_launch_info. Pass `query` if the user \
+     named a product, `sneaker_id` if they gave an exact id (including if they call it a SKU — \
+     this catalog has no separate SKU field, `sneaker_id` is it), or neither if they mean "the \
+     next drop." If it returns multiple candidates, list them briefly and ask the user which \
+     one they mean before continuing — do not guess. If it returns an error (no sneaker found \
+     for that id or query), stop and tell the user the product they asked about couldn't be \
+     found, and ask them to confirm the id or rephrase — do not silently retry with different \
+     arguments, and never substitute a different, unrequested product (e.g. falling back to the \
+     next upcoming release) as if it were the one the user asked for.
+   - **Relative time window** (e.g. "next week", "this month"): call get_current_date, then \
+     resolve_date_range with the matching period, then get_sneakers_releasing_in_range with the \
+     dates it returns. If that finds no sneakers, tell the user there are no upcoming releases \
+     in that window and stop — do not fall back to a different window or product. If it finds \
+     more than one, list them briefly and ask the user which one they mean before continuing — \
+     do not allocate for all of them at once. If it finds exactly one, there's nothing to \
+     confirm — proceed straight to allocating for that sneaker, the same as if the user had \
+     named it directly. Either way, once you've settled on one sneaker, call \
+     get_product_launch_info with its `sneaker_id` to fetch its full details before moving on \
+     to step 2 — the range lookup alone isn't enough to continue with.
 2. **Get the regions** — call get_regions to get the full list of regions requiring an \
    allocation decision.
 3. **Get warehouse capacity** — call get_warehouse_capacity to get each region's maximum \
