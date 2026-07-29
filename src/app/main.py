@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from app.api.deps import get_database, get_forecasting_client, get_sneaker_client
 from app.api.v1.router import router
+from app.core.exceptions import register_exception_handlers
 from app.core.logging import configure_logging, get_logger
 
 configure_logging()
@@ -31,6 +32,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
     app.include_router(router)
+    register_exception_handlers(app)
     return app
 
 

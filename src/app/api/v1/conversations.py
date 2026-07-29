@@ -1,7 +1,7 @@
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from langchain_core.language_models import BaseChatModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,7 +17,6 @@ from app.repositories.report_repository import ReportRepository
 from app.schemas.conversation import ConversationDetailOut, ConversationOut
 from app.schemas.message import MessageCreate, MessageOut
 from app.services.conversation_service import ConversationService
-from app.services.exceptions import ConversationAccessDeniedError, ConversationNotFoundError
 
 router = APIRouter(prefix="/conversations", tags=["conversations"])
 
@@ -64,14 +63,11 @@ async def get_conversation(
     current_user: User = Depends(get_current_user),
     conversation_service: ConversationService = Depends(_get_conversation_service),
 ) -> ConversationDetailOut:
-    try:
-        conversation = await conversation_service.get_conversation_for_user(
-            conversation_id, current_user.id
-        )
-    except ConversationNotFoundError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
-    except ConversationAccessDeniedError as exc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
+    # ConversationNotFoundError -> 404, ConversationAccessDeniedError -> 403,
+    # both handled globally (core/exceptions.py)
+    conversation = await conversation_service.get_conversation_for_user(
+        conversation_id, current_user.id
+    )
     return ConversationDetailOut.model_validate(conversation)
 
 
@@ -82,12 +78,9 @@ async def send_message(
     current_user: User = Depends(get_current_user),
     conversation_service: ConversationService = Depends(_get_conversation_service),
 ) -> MessageOut:
-    try:
-        message = await conversation_service.send_message(
-            conversation_id, current_user.id, body.content
-        )
-    except ConversationNotFoundError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
-    except ConversationAccessDeniedError as exc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
+    # ConversationNotFoundError -> 404, ConversationAccessDeniedError -> 403,
+    # both handled globally (core/exceptions.py)
+    message = await conversation_service.send_message(
+        conversation_id, current_user.id, body.content
+    )
     return MessageOut.model_validate(message)
