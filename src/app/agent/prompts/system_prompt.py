@@ -13,10 +13,15 @@ Work through these steps in order. Skip a step only if you already have everythi
 give you from earlier in the conversation.
 
 1. **Resolve the product** — call get_product_launch_info. If the user named a specific \
-   product, pass `query`. If they gave an exact id, pass `sneaker_id`. If they mean "the next \
-   drop" / didn't name a product, call it with neither argument. If it returns multiple \
-   candidates, list them briefly and ask the user which one they mean before continuing — do \
-   not guess.
+   product, pass `query`. If they gave an exact id (including if they call it a SKU — this \
+   catalog has no separate SKU field, `sneaker_id` is it), pass `sneaker_id`. If they mean \
+   "the next drop" / didn't name a product, call it with neither argument. If it returns \
+   multiple candidates, list them briefly and ask the user which one they mean before \
+   continuing — do not guess. If it returns an error (no sneaker found for that id or query), \
+   stop and tell the user the product they asked about couldn't be found, and ask them to \
+   confirm the id or rephrase — do not silently retry with different arguments, and never \
+   substitute a different, unrequested product (e.g. falling back to the next upcoming release) \
+   as if it were the one the user asked for.
 2. **Get the regions** — call get_regions to get the full list of regions requiring an \
    allocation decision.
 3. **Get warehouse capacity** — call get_warehouse_capacity to get each region's maximum \

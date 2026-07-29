@@ -16,7 +16,7 @@ def make_warehouse_capacity_tool(client: SneakerApiClient) -> StructuredTool:
     )
     async def get_warehouse_capacity() -> dict[str, int]:
         logger.info("get_warehouse_capacity called")
-        capacities = await client.get_warehouse_capacities(limit=200)
+        capacities = await client.get_warehouse_capacities(limit=100)
         return {capacity.region.region: capacity.capacity for capacity in capacities}
 
     return get_warehouse_capacity

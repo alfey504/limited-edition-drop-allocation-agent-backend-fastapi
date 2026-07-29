@@ -29,7 +29,10 @@ def extract_final_response(state_messages: list[BaseMessage]) -> str:
     final = state_messages[-1]
     if not isinstance(final, AIMessage):
         raise ValueError(f"Expected the graph's final message to be an AIMessage, got {type(final)}")
-    return final.content
+    # .content isn't reliably a str — some models (Gemini included) return a list
+    # of content blocks (e.g. [{"type": "text", "text": "...", "extras": {...}}])
+    # instead of a plain string. .text normalizes either shape into one string.
+    return str(final.text)
 
 
 def extract_report_filename(state_messages: list[BaseMessage]) -> str | None:

@@ -15,21 +15,25 @@ from app.db.base import Base
 def build_engine(settings: Settings) -> AsyncEngine:
     """Normalize a Neon connection string into one asyncpg + SQLAlchemy accept.
 
-    Neon issues URLs like `postgres://user:pass@host/db?sslmode=require`.
-    asyncpg's driver takes an `ssl` kwarg, not the libpq `sslmode` query
-    param, so it has to be moved from the URL into `connect_args`.
+    Neon issues URLs like `postgres://user:pass@host/db?sslmode=require&channel_binding=require`.
+    Those are libpq query params; asyncpg's connect() has no `sslmode` or
+    `channel_binding` kwarg at all, and SQLAlchemy's asyncpg dialect forwards
+    any unrecognized query param straight through as a connect() kwarg — so
+    every libpq-only param has to be stripped from the URL, not just the ones
+    we've happened to hit so far. `sslmode` is the one param we actually want
+    (translated into asyncpg's `ssl` connect arg); everything else in the
+    query string is dropped rather than passed through.
     """
     url = make_url(settings.db_conn)
 
     if url.drivername in ("postgres", "postgresql"):
         url = url.set(drivername="postgresql+asyncpg")
 
-    query = dict(url.query)
     connect_args: dict[str, str] = {}
-    sslmode = query.pop("sslmode", None)
+    sslmode = url.query.get("sslmode")
     if sslmode:
         connect_args["ssl"] = sslmode
-    url = url.set(query=query)
+    url = url.set(query={})
 
     return create_async_engine(url, connect_args=connect_args, pool_pre_ping=True)
 
