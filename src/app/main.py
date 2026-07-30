@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from app.api.deps import get_database, get_forecasting_client, get_sneaker_client
 from app.api.v1.router import router
-from app.core.exceptions import register_exception_handlers
+from app.api.exceptions import register_exception_handlers
 from app.core.logging import configure_logging, get_logger
 
 configure_logging()

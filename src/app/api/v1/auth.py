@@ -21,7 +21,7 @@ def _get_auth_service(
 async def register(
     body: RegisterRequest, auth_service: AuthService = Depends(_get_auth_service)
 ) -> UserOut:
-    # EmailAlreadyRegisteredError -> 409, handled globally (core/exceptions.py)
+    # EmailAlreadyRegisteredError -> 409, handled globally (api/exceptions.py)
     user = await auth_service.register(body.email, body.password)
     return UserOut.model_validate(user)
 
@@ -30,6 +30,6 @@ async def register(
 async def login(
     body: LoginRequest, auth_service: AuthService = Depends(_get_auth_service)
 ) -> TokenResponse:
-    # InvalidCredentialsError -> 401, handled globally (core/exceptions.py)
+    # InvalidCredentialsError -> 401, handled globally (api/exceptions.py)
     token = await auth_service.authenticate(body.email, body.password)
     return TokenResponse(access_token=token)

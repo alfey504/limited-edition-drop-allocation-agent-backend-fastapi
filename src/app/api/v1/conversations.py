@@ -73,7 +73,7 @@ async def get_conversation(
     conversation_service: ConversationService = Depends(_get_conversation_service),
 ) -> ConversationDetailOut:
     # ConversationNotFoundError -> 404, ConversationAccessDeniedError -> 403,
-    # both handled globally (core/exceptions.py)
+    # both handled globally (api/exceptions.py)
     conversation = await conversation_service.get_conversation_for_user(
         conversation_id, current_user.id
     )
@@ -88,7 +88,7 @@ async def send_message(
     conversation_service: ConversationService = Depends(_get_conversation_service),
 ) -> MessageOut:
     # ConversationNotFoundError -> 404, ConversationAccessDeniedError -> 403,
-    # both handled globally (core/exceptions.py)
+    # both handled globally (api/exceptions.py)
     message = await conversation_service.send_message(
         conversation_id, current_user.id, body.content
     )
