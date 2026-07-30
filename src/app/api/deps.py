@@ -8,7 +8,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from langchain_core.language_models import BaseChatModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.agent.llm import get_llm
+from app.agent.llm import get_fallback_llms, get_llm
 from app.core.config import Settings, get_settings
 from app.core.security import decode_access_token
 from app.db.models.user import User
@@ -45,6 +45,13 @@ def get_forecasting_client() -> ForecastingApiClient:
 @lru_cache
 def get_llm_client() -> BaseChatModel:
     return get_llm(get_settings())
+
+
+@lru_cache
+def get_fallback_llm_clients() -> list[BaseChatModel]:
+    """Memoized for the same reason as get_llm_client — one shared client per
+    fallback model, not rebuilt on every request."""
+    return get_fallback_llms(get_settings())
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:

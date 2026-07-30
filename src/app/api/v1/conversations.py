@@ -6,7 +6,14 @@ from langchain_core.language_models import BaseChatModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent.graph import make_agent_graph_factory
-from app.api.deps import get_current_user, get_db_session, get_forecasting_client, get_llm_client, get_sneaker_client
+from app.api.deps import (
+    get_current_user,
+    get_db_session,
+    get_fallback_llm_clients,
+    get_forecasting_client,
+    get_llm_client,
+    get_sneaker_client,
+)
 from app.core.config import Settings, get_settings
 from app.db.models.user import User
 from app.integrations.forecasting_api_client import ForecastingApiClient
@@ -25,11 +32,13 @@ def _get_conversation_service(
     session: AsyncSession = Depends(get_db_session),
     settings: Settings = Depends(get_settings),
     llm: BaseChatModel = Depends(get_llm_client),
+    fallback_llms: list[BaseChatModel] = Depends(get_fallback_llm_clients),
     sneaker_client: SneakerApiClient = Depends(get_sneaker_client),
     forecasting_client: ForecastingApiClient = Depends(get_forecasting_client),
 ) -> ConversationService:
     graph_factory = make_agent_graph_factory(
         llm,
+        fallback_llms,
         sneaker_client,
         forecasting_client,
         AllocationRepository(session),
