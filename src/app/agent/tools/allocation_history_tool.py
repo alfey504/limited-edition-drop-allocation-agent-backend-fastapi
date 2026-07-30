@@ -26,14 +26,16 @@ def make_allocation_history_tool(
 ) -> StructuredTool:
     @tool(
         description=(
-            "Look up allocation recommendations you already computed and saved earlier in "
-            "this conversation, most recent first. Each entry includes the demand forecast "
-            "that was used at the time, your forecast analysis, the allocation itself, and "
-            "your reasoning — this is the demand forecast too, not just the allocation. Use "
-            "this instead of recalling numbers from memory when the user asks a follow-up "
-            "question about a product already discussed. If nothing relevant comes back, "
-            "re-call the original tools (get_product_launch_info, get_demand_forecast, etc.) "
-            "instead of guessing."
+            "Look up allocation recommendations already computed and saved earlier in this "
+            "conversation, most recent first. Each entry has sneaker_id, total_inventory, "
+            "demand_forecast, forecast_analysis, allocation, and reasoning exactly as they "
+            "were saved. Always call this before generate_allocation_report_pdf to check "
+            "whether an entry already exists for this sneaker — if one does, reuse its fields "
+            "as-is in the report rather than recomputing or retyping them. Also use this "
+            "instead of recalling numbers from memory when the user asks a follow-up question "
+            "about a product already discussed. If nothing relevant comes back, re-call the "
+            "original tools (get_product_launch_info, get_demand_forecast, etc.) instead of "
+            "guessing."
         )
     )
     async def get_previous_allocations() -> list[dict]:

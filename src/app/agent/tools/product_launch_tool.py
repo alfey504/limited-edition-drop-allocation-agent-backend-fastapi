@@ -39,7 +39,10 @@ def make_product_launch_tool(client: SneakerApiClient) -> StructuredTool:
             "colorway, retail price, release date, and total inventory. "
             "Pass `sneaker_id` if you already have the exact id, `query` to search by "
             "free text (may return multiple candidates to disambiguate), or leave both "
-            "empty to get the single soonest upcoming release."
+            "empty to get the single soonest upcoming release. On no match, returns "
+            "{'error': ...} instead of raising — check for that key rather than assuming "
+            "the result is a real sneaker, and never substitute a different, unrequested "
+            "product for one that wasn't found."
         ),
         args_schema=ProductLaunchInput,
     )

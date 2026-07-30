@@ -19,8 +19,11 @@ class DemandForecastInput(BaseModel):
     colorway_type: str = Field(
         ...,
         description=(
-            "Colorway classification for the forecasting model (a constrained category, "
-            "not the free-text colorway name from the catalog)."
+            "Colorway classification for the forecasting model — a constrained category, not "
+            "the free-text colorway name from the catalog (e.g. 'Chicago', 'Bred'). Classify "
+            "the catalog's colorway using judgment, e.g. as a named/nickname colorway, a "
+            "descriptive/color-word colorway, or a plain base release — don't pass the raw "
+            "catalog string through unchanged."
         ),
     )
 

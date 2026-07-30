@@ -42,7 +42,7 @@ def make_date_range_tool() -> StructuredTool:
             "Resolve a relative time period (e.g. 'next week', 'next month') into a concrete "
             "start_date/end_date, both inclusive. Weeks are ISO calendar weeks (Monday-Sunday); "
             "months are calendar months. Call get_current_date first to establish 'today' before "
-            "picking a period."
+            "picking a period, then pass the returned dates to get_sneakers_releasing_in_range."
         ),
         args_schema=DateRangeInput,
     )

@@ -38,9 +38,10 @@ def make_save_allocation_tool(
     @tool(
         description=(
             "Persist the final inventory allocation recommendation for this conversation, "
-            "including the demand forecast and your analysis of it. Call this once, after "
-            "you've reasoned over product info, warehouse capacity, and demand forecasts to "
-            "arrive at a final allocation."
+            "including the demand forecast and your analysis of it. The `allocation` argument "
+            "must be exactly what allocate_inventory returned — never a number you computed or "
+            "recalled yourself. Call this once, after you've reasoned over product info, "
+            "warehouse capacity, and demand forecasts to arrive at a final allocation."
         ),
         args_schema=SaveAllocationInput,
     )

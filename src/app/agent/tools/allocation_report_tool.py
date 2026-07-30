@@ -103,8 +103,13 @@ def make_allocation_report_tool(
         description=(
             "Generate a PDF report of the final inventory allocation for this conversation, "
             "containing the forecasted demand per region, your analysis of that forecast, the "
-            "allocation per region, and the reasoning behind it. Call this once, after arriving "
-            "at a final allocation. Returns a filename the user can use to download the report."
+            "allocation per region, and the reasoning behind it. Before calling this, always "
+            "call get_previous_allocations to check for an existing entry for this sneaker and "
+            "reuse its fields as-is if one exists. Every argument here must come from an actual "
+            "tool result (allocate_inventory or a get_previous_allocations entry) — never fill "
+            "them with numbers you computed or recalled yourself. Call this once, after "
+            "arriving at a final allocation. Returns a filename the user can use to download "
+            "the report."
         ),
         args_schema=AllocationReportInput,
     )
