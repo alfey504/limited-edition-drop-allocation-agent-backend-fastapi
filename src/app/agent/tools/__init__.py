@@ -3,11 +3,13 @@ from pathlib import Path
 
 from langchain_core.tools import StructuredTool
 
+from app.agent.tools.allocate_inventory_tool import make_allocate_inventory_tool
 from app.agent.tools.allocation_history_tool import make_allocation_history_tool
 from app.agent.tools.allocation_report_tool import make_allocation_report_tool
 from app.agent.tools.current_date_tool import make_current_date_tool
 from app.agent.tools.date_range_tool import make_date_range_tool
 from app.agent.tools.demand_forecast_tool import make_demand_forecast_tool
+from app.agent.tools.forecast_ratio_tool import make_forecast_ratio_tool
 from app.agent.tools.product_launch_tool import make_product_launch_tool
 from app.agent.tools.regional_demand_drivers_tool import make_regional_demand_drivers_tool
 from app.agent.tools.regions_tool import make_regions_tool
@@ -37,6 +39,8 @@ def build_tools(
         make_regions_tool(sneaker_client),
         make_warehouse_capacity_tool(sneaker_client),
         make_demand_forecast_tool(forecasting_client),
+        make_forecast_ratio_tool(),
+        make_allocate_inventory_tool(),
         make_regional_demand_drivers_tool(),
         make_allocation_history_tool(allocation_repository, conversation_id),
         make_save_allocation_tool(allocation_repository, conversation_id),

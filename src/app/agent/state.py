@@ -12,3 +12,6 @@ class CapturedToolState(TypedDict, total=False):
     product_launch_snapshot: dict | list | None
     warehouse_capacity_snapshot: dict[str, int] | None
     demand_forecast_snapshot: dict[str, float] | None
+    forecast_ratio_snapshot: dict[str, float] | None
+    allocation_snapshot: dict[str, int] | None
+    previous_allocations_snapshot: list[dict] | None
